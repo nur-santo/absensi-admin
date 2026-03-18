@@ -1,35 +1,42 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class Kehadiran extends Model
+return new class extends Migration
 {
-    use HasFactory;
-
-    protected $table = 'kehadiran';
-
-    protected $fillable = [
-        'user_id',
-        'shift',
-        'jam_shift_masuk',
-        'jam_masuk',
-        'mode_kerja',
-        'tanggal',
-        'status',
-        'terlambat',
-        'keterlambatan',
-    ];
-
-    protected $casts = [
-        'tanggal' => 'date',
-        'terlambat' => 'boolean',
-    ];
-
-    public function user()
+    public function up(): void
     {
-        return $this->belongsTo(User::class);
+        Schema::create('kehadiran', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->string('shift');
+            $table->time('jam_shift_masuk');
+            $table->time('jam_masuk')->nullable();
+            $table->string('mode_kerja')->nullable();
+
+            $table->date('tanggal');
+
+            $table->enum('status', ['ALPA', 'HADIR', 'IZIN', 'CUTI', 'SAKIT'])
+                ->default('ALPA');
+
+            $table->boolean('terlambat')->default(false);
+            $table->integer('menit_telat')->nullable();
+            $table->string('keterlambatan')->nullable();
+
+            $table->timestamps();
+
+            $table->unique(['user_id', 'tanggal']);
+        });
     }
-}
+
+    public function down(): void
+    {
+        Schema::dropIfExists('kehadiran');
+    }
+};

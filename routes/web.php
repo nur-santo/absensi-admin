@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\KehadiranController;
 | ROOT
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return auth('admin')->check()
         ? redirect()->route('admin.home')
@@ -53,7 +54,9 @@ Route::prefix('admin')
         */
         Route::get('/home', [HomeController::class, 'index'])
             ->name('admin.home');
-            
+        Route::post('/shift/mulai', [ShiftsController::class, 'mulai'])
+            ->name('shift.mulai');
+
 
         /*
         | USERS
@@ -67,7 +70,7 @@ Route::prefix('admin')
         /*
         | KEHADIRAN
         */
-        Route::post('/generate-kehadiran', [KehadiranController::class,'generate'])
+        Route::post('/generate-kehadiran', [KehadiranController::class, 'generate'])
             ->name('admin.generate.kehadiran');
 
         /*

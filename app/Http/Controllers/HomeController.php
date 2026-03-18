@@ -4,54 +4,72 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Perizinan;
+use App\Models\Kehadiran;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $tanggal = Carbon::today()->toDateString();
+public function index()
+{
+    $tanggal = Carbon::today()->toDateString();
 
-        $users = User::with([
-            'shift',
-            'kehadiran' => function ($q) use ($tanggal) {
-                $q->whereDate('tanggal', $tanggal);
-            },
-        ])
-        ->orderBy('shift_id')
-        ->orderBy('name')
+    // ======================
+    // DATA USER (PUNYA KAMU)
+    // ======================
+    $users = User::with([
+        'shift',
+        'kehadiran' => function ($q) use ($tanggal) {
+            $q->whereDate('tanggal', $tanggal);
+        },
+    ])
+    ->orderBy('shift_id')
+    ->orderBy('name')
+    ->get()
+    ->groupBy(fn ($user) => $user->shift->nama_shift ?? 'Tanpa Shift');
+
+    // ======================
+    // GLOBAL STATUS
+    // ======================
+    $summary = Kehadiran::select('status', DB::raw('COUNT(*) as total'))
+        ->whereDate('tanggal', $tanggal)
+        ->groupBy('status')
+        ->pluck('total', 'status')
+        ->toArray();
+
+    // ======================
+    // TERLAMBAT vs TEPAT
+    // ======================
+    $tepat = Kehadiran::whereDate('tanggal', $tanggal)
+        ->where('status', 'HADIR')
+        ->where('terlambat', 0)
+        ->count();
+
+    $telat = Kehadiran::whereDate('tanggal', $tanggal)
+        ->where('status', 'HADIR')
+        ->where('terlambat', 1)
+        ->count();
+
+    $attendanceDetail = [
+        'TEPAT WAKTU' => $tepat,
+        'TERLAMBAT' => $telat
+    ];
+
+    // ======================
+    // PER SHIFT
+    // ======================
+    $shiftSummary = Kehadiran::select('shift', 'status', DB::raw('COUNT(*) as total'))
+        ->whereDate('tanggal', $tanggal)
+        ->groupBy('shift', 'status')
         ->get()
-        ->map(function ($user) {
+        ->groupBy('shift');
 
-            $kehadiran = $user->kehadiran->first();
-
-            if ($kehadiran && $kehadiran->jam_masuk && $kehadiran->jam_shift_masuk) {
-
-                $jamMasuk = Carbon::parse($kehadiran->jam_masuk);
-                $jamShift = Carbon::parse($kehadiran->jam_shift_masuk);
-
-                if ($jamMasuk->gt($jamShift)) {
-                    $kehadiran->keterlambatan =
-                        $jamShift->diff($jamMasuk)->format('%H:%I:%S');
-                } else {
-                    $kehadiran->keterlambatan = '00:00:00';
-                }
-            } else {
-                if ($kehadiran) {
-                    $kehadiran->keterlambatan = '-';
-                }
-            }
-
-            return $user;
-        })
-        ->groupBy(fn ($user) => $user->shift->nama_shift ?? 'Tanpa Shift');
-
-        $jumlahPerizinanPending = Perizinan::where('status', 'PENDING')->count();
-
-        return view('home', compact(
-            'tanggal',
-            'users',
-            'jumlahPerizinanPending'
-        ));
-    }
-}
+    return view('home', compact(
+        'tanggal',
+        'users',
+        'summary',
+        'shiftSummary',
+        'attendanceDetail'
+    ));
+}}
