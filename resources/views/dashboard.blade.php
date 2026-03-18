@@ -11,7 +11,7 @@
 <div class="d-flex min-vh-100">
 
     {{-- SIDEBAR --}}
-    <div class="bg-black text-white p-3" style="width:250px">
+    <div class="bg-dark text-white p-3" style="width:250px">
         <h5 class="mb-4">ADMIN</h5>
 
         <ul class="nav flex-column gap-2">
