@@ -49,3 +49,5 @@ Fitur untuk mengubah jam shift.
 - Laragon / MySql
 
 ---
+
+[Aplikasi pengguna atau karyawan](https://github.com/nur-santo/absensi-user)
