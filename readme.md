@@ -26,8 +26,9 @@ Menampilkan semua karyawan yang terdaftar
 Menampilkan data seluruh karyawan lengkap dengan rekap kehadiran, keterlambatan, dan persentase kehadiran.
 
 ![Laporan Karyawan](img/laporan.png)
-![Laporan Karyawan](img/rekap.png)
-![Laporan Karyawan](img/individual.png)
+![Laporan Karyawan](img/laporan_2.png)
+![Laporan Karyawan](img/laporan_3.png)
+![Laporan Karyawan](img/laporan_4.png)
 
 ---
 
