@@ -10,10 +10,8 @@ return new class extends Migration
     {
         Schema::create('kehadiran', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('user_id')
-                ->constrained()
-                ->cascadeOnDelete();
+                ->constrained();
 
             $table->string('shift');
             $table->time('jam_shift_masuk');

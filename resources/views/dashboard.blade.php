@@ -12,7 +12,7 @@
 
     {{-- SIDEBAR --}}
     <div class="bg-dark text-white p-3" style="width:250px">
-        <h5 class="mb-4">ADMIN</h5>
+        <h5 class="mb-4">Absensi App</h5>
 
         <ul class="nav flex-column gap-2">
             <li><a href="{{ route('dashboard') }}" class="nav-link text-white">Home</a></li>

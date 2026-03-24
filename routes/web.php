@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PerizinanApprovalController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\ShiftsController;
+use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LiburController;
 use App\Http\Controllers\Admin\KehadiranController;
@@ -54,7 +54,7 @@ Route::prefix('admin')
         */
         Route::get('/home', [HomeController::class, 'index'])
             ->name('admin.home');
-        Route::post('/shift/mulai', [ShiftsController::class, 'mulai'])
+        Route::post('/shift/mulai', [ShiftController::class, 'mulai'])
             ->name('shift.mulai');
 
 
@@ -91,11 +91,9 @@ Route::prefix('admin')
         Route::get('/settings', [SettingsController::class, 'index'])
             ->name('admin.settings.index');
 
-        Route::get('/settings/shifts', [ShiftsController::class, 'index'])
-            ->name('admin.shifts');
+        Route::get('/settings/shifts', [ShiftController::class, 'index'])->name('admin.shifts');
+        Route::patch('/settings/shifts/{shift}', [ShiftController::class, 'update'])->name('admin.settings.shifts.update');
 
-        Route::patch('/settings/shifts/{shift}', [ShiftsController::class, 'update'])
-            ->name('admin.settings.shifts.update');
 
         /*
         | LAPORAN
@@ -109,7 +107,7 @@ Route::prefix('admin')
         /*
         | LIBUR
         */
-        Route::get('libur/manage/{id?}', [LiburController::class, 'manage'])
+        Route::get('libur/manage/{id}', [LiburController::class, 'manage'])
             ->name('libur.manage');
 
         Route::post('libur/store', [LiburController::class, 'store'])

@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Kehadiran;
 use Carbon\Carbon;
 
+// deprecated
+
 class KehadiranController extends Controller
 {
     public function generate()

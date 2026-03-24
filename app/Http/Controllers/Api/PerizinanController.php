@@ -36,12 +36,7 @@ class PerizinanController extends Controller
 
         $perizinan = Perizinan::create($validated);
 
-        // 🔥 LOAD RELASI USER (WAJIB supaya notif tidak error)
         $perizinan->load('user');
-
-        // ===============================
-        // 🔔 TRIGGER NOTIF KE ADMIN
-        // ===============================
         $admins = Admin::all();
 
         foreach ($admins as $admin) {
